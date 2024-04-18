@@ -1,79 +1,85 @@
-import React, { useState } from "react";
-import { Button, TextField, Typography, Box, Link } from "@mui/material";
-import "./styles.css";
+// src/Login.js
+import React, { useState } from 'react';
+import { TextField, Button, Box, Typography } from '@mui/material';
 
 const Login = () => {
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
-  const [errors, setErrors] = useState({
-    email: "",
-    password: "",
-  });
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const validateEmail = (email) => {
-    const re =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(email);
-  };
-
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-
-    if (name === "email") {
-      setErrors((prev) => ({
-        ...prev,
-        email: validateEmail(value) ? "" : "Invalid email address",
-      }));
-    }
-  };
-
-  const handleSubmit = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
-    // Validate the form
-    if (form.email && form.password && !errors.email) {
-      console.log("Form is valid:", form);
-      // Proceed with login process
+    try {
+      const response = await fetch(`https://localhost:7115/api/HospitalManager/LogIn?emailToLogin=${email}&passwordToLogin=${password}`, { 
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log('Login successful:', data);
+        // Redirect or handle login success
+      } else {
+        setError(data.message || 'Login failed');
+      }
+    } catch (err) {
+      setError('Login failed. Please check your network.');
+      console.error('Error:', err);
     }
   };
 
   return (
-    <Box className="loginForm">
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      minHeight="100vh"
+    >
       <Typography variant="h4" gutterBottom>
         Login
       </Typography>
-      <form onSubmit={handleSubmit}>
+      <Box component="form" onSubmit={handleLogin} noValidate sx={{ mt: 1 }}>
         <TextField
-          label="Email"
           variant="outlined"
-          type="email"
+          margin="normal"
+          required
+          fullWidth
+          label="Email Address"
           name="email"
-          value={form.email}
-          onChange={handleChange}
-          error={!!errors.email}
-          helperText={errors.email}
-          fullWidth
-          margin="normal"
+          autoComplete="email"
+          autoFocus
+          value={email}
+          onChange={e => setEmail(e.target.value)}
         />
         <TextField
-          label="Password"
           variant="outlined"
-          type="password"
-          name="password"
-          value={form.password}
-          onChange={() => {}}
-          fullWidth
           margin="normal"
+          required
+          fullWidth
+          name="password"
+          label="Password"
+          type="password"
+          autoComplete="current-password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
         />
-        <Button type="submit" variant="contained" color="primary" fullWidth>
-          Login
+        {error && (
+          <Typography color="error" align="center">
+            {error}
+          </Typography>
+        )}
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          sx={{ mt: 3, mb: 2 }}
+        >
+          Sign In
         </Button>
-        <Typography variant="body2" style={{ marginTop: "10px" }}>
-          Don't have an account? <Link href="/register">Register</Link>
-        </Typography>
-      </form>
+      </Box>
     </Box>
   );
 };
