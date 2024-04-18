@@ -7,6 +7,7 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
+import { Link } from "react-router-dom";
 import "./styles.css";
 
 const Register = () => {
@@ -68,17 +69,9 @@ const Register = () => {
         hospitalID: value ? "" : "Hospital ID is required",
       }));
     }
-
-    // Clear password error when a valid password is entered
-    if (name === "password" && validatePassword(value)) {
-      setErrors((prev) => ({
-        ...prev,
-        password: "",
-      }));
-    }
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (
       !errors.email &&
@@ -92,16 +85,36 @@ const Register = () => {
       form.lastName &&
       form.hospitalID
     ) {
-      console.log("Form is valid:", form);
-      // Submit form
+      try {
+        const response = await fetch('https://localhost:7115/api/HospitalManager/Registration', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(form)
+        });
+        const data = await response.json();
+        if (response.ok) {
+          console.log('Registration successful:', data);
+          // Redirect or handle registration success
+          // Example redirect:
+          // window.location.href = '/login';
+        } else {
+          console.error('Registration failed:', data.message);
+          // Optionally display this error on the UI
+        }
+      } catch (error) {
+        console.error('Error during registration:', error);
+        // Optionally display this error on the UI
+      }
     }
   };
 
   // Array of hospital IDs for dropdown
   const hospitalOptions = [
-    { id: "hospital1", name: "Hospital 1" },
-    { id: "hospital2", name: "Hospital 2" },
-    { id: "hospital3", name: "Hospital 3" },
+    { id: "1", name: "Hospital 1" },
+    { id: "2", name: "Hospital 2" },
+    { id: "3", name: "Hospital 3" },
   ];
 
   return (
@@ -182,6 +195,12 @@ const Register = () => {
           Register
         </Button>
       </form>
+      <Typography variant="body1" style={{ marginTop: 16 }}>
+        Already have an account?{" "}
+        <Link to="/login" style={{ textDecoration: "none", color: "blue" }}>
+          Log in
+        </Link>
+      </Typography>
     </Box>
   );
 };
