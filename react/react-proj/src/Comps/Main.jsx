@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Button,
   Table,
@@ -24,26 +24,39 @@ const Main = () => {
     } else {
       // Redirect to login if no user is found in session storage
       navigate("/login");
+      return; // Exit if navigating away
     }
-
-    // Fetch hospital managers
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `https://localhost:7115/api/HospitalManager/GetAllHospitalManagersByHospitalId?hospitalId=${JSON.parse(sessionStorage.getItem("user")).hospitalId}`
-        );
-        const data = await response.json();
-        console.log(data)
-        setHospitalManagers(data);
-      } catch (error) {
-        console.error("Failed to fetch hospital managers", error);
-      }
-    };
-
-    fetchData();
   }, [navigate]);
 
-  // Handle logout
+  const fetchData = useCallback(() => {
+    const userDetails = JSON.parse(sessionStorage.getItem("user"));
+    if (userDetails && userDetails.hospitalId) {
+      // Assuming POST is required by the server for this API endpoint
+      fetch(
+        `https://localhost:7115/api/HospitalManager/GetAllHospitalManagersByHospitalId?hospitalId=${userDetails.hospitalId}`,
+        {
+          method: "POST", // Changed to POST method
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ hospitalId: userDetails.hospitalId }), // Send hospitalId in the body
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          setHospitalManagers(data);
+        })
+        .catch((error) => {
+          console.error("Failed to fetch hospital managers", error);
+          // Optionally handle the error, e.g., set an error state and display it
+        });
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
   const handleLogout = () => {
     sessionStorage.clear();
     navigate("/login");
@@ -68,17 +81,17 @@ const Main = () => {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>ID</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Hospital</TableCell>
+            <TableCell>First Name</TableCell>
+            <TableCell>Last Name</TableCell>
+            <TableCell>Email</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {hospitalManagers.map((manager) => (
-            <TableRow key={manager.id}>
-              <TableCell>{manager.id}</TableCell>
-              <TableCell>{manager.name}</TableCell>
-              <TableCell>{manager.hospital}</TableCell>
+            <TableRow key={manager.email}>
+              <TableCell>{manager.firstName}</TableCell>
+              <TableCell>{manager.lastName}</TableCell>
+              <TableCell>{manager.email}</TableCell>
             </TableRow>
           ))}
         </TableBody>
