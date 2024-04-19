@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Register from "./Comps/Register";
 import Login from "./Comps/Login";
+import Main from "./Comps/Main";
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import "./App.css";
 
