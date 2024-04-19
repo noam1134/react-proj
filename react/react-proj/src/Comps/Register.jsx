@@ -7,7 +7,7 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate from react-router-dom
 import "./styles.css";
 
 const Register = () => {
@@ -25,6 +25,7 @@ const Register = () => {
     password: "",
     hospitalID: "",
   });
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const validateEmail = (email) => {
     const re =
@@ -86,25 +87,28 @@ const Register = () => {
       form.hospitalID
     ) {
       try {
-        const response = await fetch('https://localhost:7115/api/HospitalManager/Registration', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(form)
-        });
+        const response = await fetch(
+          "https://localhost:7115/api/HospitalManager/Registration",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(form),
+          }
+        );
         const data = await response.json();
         if (response.ok) {
-          console.log('Registration successful:', data);
-          // Redirect or handle registration success
-          // Example redirect:
-          // window.location.href = '/login';
+          console.log("Registration successful");
+          const { password, ...managerDetails } = form; // Exclude password from the form data
+          sessionStorage.setItem("user", JSON.stringify(managerDetails));
+          navigate('/main'); // Navigate to the main page upon successful registration
         } else {
-          console.error('Registration failed:', data.message);
+          console.error("Registration failed:", data.message);
           // Optionally display this error on the UI
         }
       } catch (error) {
-        console.error('Error during registration:', error);
+        console.error("Error during registration:", error);
         // Optionally display this error on the UI
       }
     }

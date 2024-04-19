@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { TextField, Button, Box, Typography, Link } from "@mui/material"; // Import Link from Material-UI
+import { TextField, Button, Box, Typography, Link } from "@mui/material";
+import { useNavigate } from "react-router-dom";  // Import useNavigate
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();  // Initialize useNavigate
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -22,7 +24,9 @@ const Login = () => {
       const data = await response.json();
       if (response.ok) {
         console.log("Login successful:", data);
-        // Redirect or handle login success
+        const { password, ...managerDetails } = data; // Exclude password
+        sessionStorage.setItem('user', JSON.stringify(managerDetails));
+        navigate('/main');  // Navigate to the main page
       } else {
         setError(data.message || "Login failed");
       }
@@ -81,7 +85,6 @@ const Login = () => {
         >
           Sign In
         </Button>
-        {/* Add a link for registration */}
         <Typography variant="body2" align="center">
           Don't have an account?{" "}
           <Link href="/register" color="primary">
