@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "TPtUbKqBMx3+hvsCpGyXhvPbZ4gKNdNa8sBamhxzXvBThEtCXh9uTDty7Qe19ZW1RBeZkkOqbMs3/vOzw7Fvmw==",
+  "dgSpecHash": "2cgW+7igABRgzE3a7aEQ9x+I7ZUfJeeDtNs7cj9HvVX+5J6+eEt1xrr4Hgl049YyV3gvo7D7msPHWZWzkULVtA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Noam\\Documents\\GitHub\\react-proj\\react\\ReactProjServer\\ReactProjServer.csproj",
+  "projectFilePath": "C:\\Users\\Noam\\Documents\\GitHub\\react-proj\\ReactProjServer\\ReactProjServer.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Noam\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
     "C:\\Users\\Noam\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",

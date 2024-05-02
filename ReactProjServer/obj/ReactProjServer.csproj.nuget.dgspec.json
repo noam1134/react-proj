@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Noam\\Documents\\GitHub\\react-proj\\react\\ReactProjServer\\ReactProjServer.csproj": {}
+    "C:\\Users\\Noam\\Documents\\GitHub\\react-proj\\ReactProjServer\\ReactProjServer.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Noam\\Documents\\GitHub\\react-proj\\react\\ReactProjServer\\ReactProjServer.csproj": {
+    "C:\\Users\\Noam\\Documents\\GitHub\\react-proj\\ReactProjServer\\ReactProjServer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Noam\\Documents\\GitHub\\react-proj\\react\\ReactProjServer\\ReactProjServer.csproj",
+        "projectUniqueName": "C:\\Users\\Noam\\Documents\\GitHub\\react-proj\\ReactProjServer\\ReactProjServer.csproj",
         "projectName": "ReactProjServer",
-        "projectPath": "C:\\Users\\Noam\\Documents\\GitHub\\react-proj\\react\\ReactProjServer\\ReactProjServer.csproj",
+        "projectPath": "C:\\Users\\Noam\\Documents\\GitHub\\react-proj\\ReactProjServer\\ReactProjServer.csproj",
         "packagesPath": "C:\\Users\\Noam\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Noam\\Documents\\GitHub\\react-proj\\react\\ReactProjServer\\obj\\",
+        "outputPath": "C:\\Users\\Noam\\Documents\\GitHub\\react-proj\\ReactProjServer\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
