@@ -51,7 +51,11 @@ const Main = () => {
       )
         .then((response) => response.json())
         .then((data) => {
-          setHospitalManagers(data);
+          // Filter out the logged-in user from the list of hospital managers
+          const filteredManagers = data.filter(
+            (manager) => manager.email !== user.email
+          );
+          setHospitalManagers(filteredManagers);
         })
         .catch((error) => {
           console.error("Failed to fetch hospital managers", error);
