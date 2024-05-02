@@ -10,39 +10,39 @@ import {
   Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-const {
-  createReport
-} = require("./jsFiles/runReportCreation.js");
 
 const Main = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState({});
   const [hospitalManagers, setHospitalManagers] = useState([]);
 
+  const openPdf = () => {
+    const hospitalPath =
+      "./src/data/hospital_" +
+      JSON.parse(sessionStorage.getItem("user")).hospitalId +
+      ".pdf";
+    window.open(hospitalPath, "_blank");
+  };
+
   useEffect(() => {
-    // Retrieve user from session storage
     const storedUser = sessionStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     } else {
-      // Redirect to login if no user is found in session storage
       navigate("/login");
-      return; // Exit if navigating away
     }
   }, [navigate]);
 
   const fetchData = useCallback(() => {
-    const userDetails = JSON.parse(sessionStorage.getItem("user"));
-    if (userDetails && userDetails.hospitalId) {
-      // Assuming POST is required by the server for this API endpoint
+    if (user && user.hospitalId) {
       fetch(
-        `https://localhost:7115/api/HospitalManager/GetAllHospitalManagersByHospitalId?hospitalId=${userDetails.hospitalId}`,
+        `https://localhost:7115/api/HospitalManager/GetAllHospitalManagersByHospitalId?hospitalId=${user.hospitalId}`,
         {
-          method: "POST", // Changed to POST method
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ hospitalId: userDetails.hospitalId }), // Send hospitalId in the body
+          body: JSON.stringify({ hospitalId: user.hospitalId }),
         }
       )
         .then((response) => response.json())
@@ -51,10 +51,9 @@ const Main = () => {
         })
         .catch((error) => {
           console.error("Failed to fetch hospital managers", error);
-          // Optionally handle the error, e.g., set an error state and display it
         });
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     fetchData();
@@ -63,6 +62,20 @@ const Main = () => {
   const handleLogout = () => {
     sessionStorage.clear();
     navigate("/login");
+  };
+
+  const handleCreateReport = () => {
+    const userDetails = JSON.parse(sessionStorage.getItem("user"));
+    fetch("http://localhost:7115/create-report", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ user: userDetails }),
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.error("Error creating report:", error));
   };
 
   return (
@@ -78,7 +91,12 @@ const Main = () => {
       >
         Logout
       </Button>
-      <Button variant="contained" color="primary" style={{ margin: "20px 0" }} onClick={createReport}>
+      <Button
+        variant="contained"
+        color="primary"
+        style={{ margin: "20px 0" }}
+        onClick={openPdf}
+      >
         Create Report
       </Button>
       <Table>
