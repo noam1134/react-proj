@@ -7,7 +7,7 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom"; // Import useNavigate from react-router-dom
+import { Link, useNavigate } from "react-router-dom";
 import "./styles.css";
 
 const Register = () => {
@@ -16,16 +16,18 @@ const Register = () => {
     firstName: "",
     lastName: "",
     password: "",
-    hospitalID: "",
+    hospitalId: "",
+    image: "",
   });
   const [errors, setErrors] = useState({
     email: "",
     firstName: "",
     lastName: "",
     password: "",
-    hospitalID: "",
+    hospitalId: "",
+    image: "",
   });
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   const validateEmail = (email) => {
     const re =
@@ -64,12 +66,21 @@ const Register = () => {
         ...prev,
         lastName: value ? "" : "Last name is required",
       }));
-    } else if (name === "hospitalID") {
+    } else if (name === "hospitalId") {
       setErrors((prev) => ({
         ...prev,
-        hospitalID: value ? "" : "Hospital ID is required",
+        hospitalId: value ? "" : "Hospital ID is required",
+      }));
+    } else if (name === "image") {
+      setErrors((prev) => ({
+        ...prev,
+        image: value ? "" : "Image is required",
       }));
     }
+  };
+
+  const handleImageChange = (event) => {
+    setForm((prev) => ({ ...prev, image: event.target.files[0] }));
   };
 
   const handleSubmit = async (event) => {
@@ -79,12 +90,14 @@ const Register = () => {
       !errors.password &&
       !errors.firstName &&
       !errors.lastName &&
-      !errors.hospitalID &&
+      !errors.hospitalId &&
+      !errors.image &&
       form.email &&
       form.password &&
       form.firstName &&
       form.lastName &&
-      form.hospitalID
+      form.hospitalId &&
+      form.image
     ) {
       try {
         const response = await fetch(
@@ -101,8 +114,9 @@ const Register = () => {
         if (response.ok) {
           console.log("Registration successful");
           const { password, ...managerDetails } = form; // Exclude password from the form data
+          console.log("Look==============>" + JSON.stringify(managerDetails));
           sessionStorage.setItem("user", JSON.stringify(managerDetails));
-          navigate('/main'); // Navigate to the main page upon successful registration
+          navigate("/main"); // Navigate to the main page upon successful registration
         } else {
           console.error("Registration failed:", data.message);
           // Optionally display this error on the UI
@@ -111,6 +125,12 @@ const Register = () => {
         console.error("Error during registration:", error);
         // Optionally display this error on the UI
       }
+    } else {
+      // If any field is invalid or empty, set an error for the hospital select
+      setErrors((prev) => ({
+        ...prev,
+        hospitalId: form.hospitalId ? "" : "Hospital is required",
+      }));
     }
   };
 
@@ -178,10 +198,10 @@ const Register = () => {
         <Select
           label="Hospital"
           variant="outlined"
-          name="hospitalID"
-          value={form.hospitalID}
+          name="hospitalId"
+          value={form.hospitalId}
           onChange={handleChange}
-          error={!!errors.hospitalID}
+          error={!!errors.hospitalId}
           fullWidth
           displayEmpty
           margin="normal"
@@ -195,6 +215,22 @@ const Register = () => {
             </MenuItem>
           ))}
         </Select>
+        {errors.hospitalId && (
+          <Typography color="error" style={{ marginBottom: "20px" }}>
+            {errors.hospitalId}
+          </Typography>
+        )}
+        <input
+          accept="image/*"
+          type="file"
+          onChange={handleImageChange}
+          style={{ display: "block", marginBottom: "20px" }}
+        />
+        {errors.image && (
+          <Typography color="error" style={{ marginBottom: "20px" }}>
+            {errors.image}
+          </Typography>
+        )}
         <Button type="submit" variant="contained" color="primary" fullWidth>
           Register
         </Button>

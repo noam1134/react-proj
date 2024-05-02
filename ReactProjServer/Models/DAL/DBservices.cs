@@ -90,59 +90,6 @@ public class DBservices
         }
     }
 
-    //--------------------------------------------------------------------------------------------------
-    // This method Send an email 
-    //--------------------------------------------------------------------------------------------------
-    public bool SendMail(Mail email)
-    {
-
-        SqlConnection con;
-        SqlCommand cmd;
-
-        try
-        {
-            con = connect("myProjDB"); // create the connection
-        }
-        catch (Exception ex)
-        {
-            // write to log
-            throw (ex);
-        }
-
-        Dictionary<string, object> paramDic = new Dictionary<string, object>();
-        paramDic.Add("@ToEmail", email.ToEmail);
-        paramDic.Add("@FromEmail", email.FromEmail);
-        paramDic.Add("@EmailSubject", email.Subject);
-        paramDic.Add("@Content", email.Content);
-        paramDic.Add("@SendingDate", email.SendingDate);
-
-        cmd = CreateCommandWithStoredProcedure("SP_SendEmail", con, paramDic);
-
-        try
-        {
-            int numEffected = cmd.ExecuteNonQuery(); // execute the command
-            if (numEffected == 0)
-            {
-                return false;
-            }
-            return true;
-        }
-        catch (Exception ex)
-        {
-            // write to log
-            throw (ex);
-        }
-
-        finally
-        {
-            if (con != null)
-            {
-                // close the db connection
-                con.Close();
-            }
-        }
-    }
-
 
     //--------------------------------------------------------------------------------------------------
     // This method Log in by user mail, password
@@ -254,77 +201,6 @@ public class DBservices
 
 
             return hospitalManagerList;
-        }
-        catch (Exception ex)
-        {
-            // write to log
-            throw (ex);
-        }
-
-        finally
-        {
-            if (con != null)
-            {
-                // close the db connection
-                con.Close();
-            }
-            // note that the return value appears only after closing the connection
-            var result = returnParameter.Value;
-        }
-
-    }
-
-    //--------------------------------------------------------------------------------------------------
-    // This method Get All Emails By Manager
-    //--------------------------------------------------------------------------------------------------
-    public List<Mail> GetAllEmailsByManager(string email)
-    {
-        
-        SqlConnection con;
-        SqlCommand cmd;
-
-        try
-        {
-            con = connect("myProjDB"); // create the connection
-        }
-        catch (Exception ex)
-        {
-            // write to log
-            throw (ex);
-        }
-
-
-        Dictionary<string, object> paramDic = new Dictionary<string, object>();
-        paramDic.Add("@EmailAddress", email);
-
-
-        cmd = CreateCommandWithStoredProcedure("SP_getAllEmails", con, paramDic);             // create the command
-        var returnParameter = cmd.Parameters.Add("@returnValue", SqlDbType.Int);
-
-        returnParameter.Direction = ParameterDirection.ReturnValue;
-
-
-        List<Mail> inbox = new List<Mail>();
-
-        try
-        {
-            SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
-
-            while (dataReader.Read())
-            {
-                Mail mail = new Mail();
-                mail.ToEmail = dataReader["ToEmail"].ToString();
-                mail.FromEmail = dataReader["FromEmail"].ToString();
-                mail.Subject = dataReader["EmailSubject"].ToString();
-                mail.Content = dataReader["Content"].ToString();
-                mail.SendingDate = Convert.ToDateTime(dataReader["SendingDate"]);
-                
-                inbox.Add(mail);
-            }
-
-
-
-            return inbox;
         }
         catch (Exception ex)
         {
