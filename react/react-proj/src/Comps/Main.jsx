@@ -10,6 +10,9 @@ import {
   Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+const {
+  createReport
+} = require("./jsFiles/runReportCreation.js");
 
 const Main = () => {
   const navigate = useNavigate();
@@ -75,7 +78,7 @@ const Main = () => {
       >
         Logout
       </Button>
-      <Button variant="contained" color="primary" style={{ margin: "20px 0" }}>
+      <Button variant="contained" color="primary" style={{ margin: "20px 0" }} onClick={createReport}>
         Create Report
       </Button>
       <Table>
