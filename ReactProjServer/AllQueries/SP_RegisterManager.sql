@@ -25,7 +25,8 @@ CREATE PROCEDURE SP_RegisterManager
 	@email varchar(50),
 	@firstName varchar(30),
 	@lastname varchar(30),
-	@password varchar(30),
+	@password varchar(50),
+	@imagePath varchar(200),
 	@hospitalId int
 AS
 BEGIN
@@ -36,7 +37,7 @@ BEGIN
 		throw 50000, 'Email already taken!', 1
 	end
     -- Insert statements for procedure here
-	INSERT INTO HospitalManagers (Email, FirstName, LastName, ManagerPassword, HospitalId)
-	VALUES (@email, @firstName, @lastname, @password, @hospitalId)
+	INSERT INTO HospitalManagers (Email, FirstName, LastName, ManagerPassword,ImagePath, HospitalId)
+	VALUES (@email, @firstName, @lastname, @password, @imagePath, @hospitalId)
 END
 GO

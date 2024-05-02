@@ -5,5 +5,7 @@ create table HospitalManagers(
 	Email varchar(30) primary key,
 	FirstName varchar(30),
 	LastName varchar(30),
+	ManagerPassword varchar(50),
+	ImagePath varchar(200),
 	HospitalId int
 )

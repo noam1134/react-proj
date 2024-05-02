@@ -7,6 +7,7 @@
         public string LastName { get; set; }
         public string Password { get; set; }
         public int HospitalId { get; set; }
+        public string ImagePath { get; set; }
 
         public HospitalManager()
         {
@@ -14,14 +15,16 @@
             FirstName = "";
             LastName = "";
             Password = "";
+            ImagePath = "";
             HospitalId = 0;
         }
-        public HospitalManager(string email, string firstName, string lastName,string password, int hospitalId)
+        public HospitalManager(string email, string firstName, string lastName,string password,string imagePath, int hospitalId)
         {
             Email = email;
             FirstName = firstName;
             LastName = lastName;
             Password = password;
+            ImagePath = imagePath ;
             HospitalId = hospitalId;
         }
 

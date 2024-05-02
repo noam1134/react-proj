@@ -60,6 +60,7 @@ public class DBservices
         paramDic.Add("@firstName", manager.FirstName);
         paramDic.Add("@lastName", manager.LastName);
         paramDic.Add("@password", manager.Password);
+        paramDic.Add("@imagePath", manager.ImagePath);
         paramDic.Add("@hospitalId", manager.HospitalId);
 
         cmd = CreateCommandWithStoredProcedure("SP_RegisterManager", con, paramDic);
@@ -126,6 +127,7 @@ public class DBservices
                 manager.LastName = dataReader["LastName"].ToString();
                 manager.Email = dataReader["Email"].ToString();
                 manager.Password = dataReader["ManagerPassword"].ToString();
+                manager.ImagePath = dataReader["ImagePath"].ToString();
                 manager.HospitalId = Convert.ToInt32(dataReader["HospitalId"]);
             }
             if (manager.Email == "")
@@ -190,6 +192,7 @@ public class DBservices
                 hm.FirstName = dataReader["FirstName"].ToString();
                 hm.LastName = dataReader["LastName"].ToString();
                 hm.Email = dataReader["Email"].ToString();
+                hm.ImagePath = dataReader["ImagePath"].ToString();
                 hm.HospitalId = Convert.ToInt32(dataReader["HospitalId"]);
                 
                 hospitalManagerList.Add(hm);
