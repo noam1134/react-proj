@@ -17,7 +17,7 @@ const Main = () => {
   const [emailModalOpen, setEmailModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [emails, setEmails] = useState([]);
-  const emailsPerPage = 5;
+  const emailsPerPage = 6;
 
   // Now, emails state will be correctly handled by DataManager
   const { hospitalManagers } = DataManager({
