@@ -16,7 +16,7 @@ const Main = () => {
   const [popupOpen, setPopupOpen] = useState(false);
   const [emailModalOpen, setEmailModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [emails, setEmails] = useState([]); // This is your newly defined state for emails
+  const [emails, setEmails] = useState([]);
   const emailsPerPage = 5;
 
   // Now, emails state will be correctly handled by DataManager
@@ -71,6 +71,12 @@ const Main = () => {
       });
   };
 
+  const openPdf = () => {
+    const hospitalPath =
+      "./src/data/hospital_" + (user && user.hospitalId) + ".pdf";
+    window.open(hospitalPath, "_blank");
+  };
+
   const indexOfLastEmail = currentPage * emailsPerPage;
   const indexOfFirstEmail = indexOfLastEmail - emailsPerPage;
   const currentEmails = emails.slice(indexOfFirstEmail, indexOfLastEmail);
@@ -109,6 +115,14 @@ const Main = () => {
         style={{ position: "absolute", right: 160, top: 20 }}
       >
         View Emails
+      </Button>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={openPdf}
+        style={{ margin: "20px 0" }}
+      >
+        Create Report
       </Button>
       <HospitalManagerList
         hospitalManagers={hospitalManagers}
