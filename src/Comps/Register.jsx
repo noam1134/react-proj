@@ -157,7 +157,7 @@ const Register = () => {
           error={!!errors.email}
           helperText={errors.email}
           fullWidth
-          margin="normal"
+          margin="dense"
         />
         <TextField
           label="First Name"
@@ -169,7 +169,7 @@ const Register = () => {
           error={!!errors.firstName}
           helperText={errors.firstName}
           fullWidth
-          margin="normal"
+          margin="dense"
         />
         <TextField
           label="Last Name"
@@ -181,7 +181,7 @@ const Register = () => {
           error={!!errors.lastName}
           helperText={errors.lastName}
           fullWidth
-          margin="normal"
+          margin="dense"
         />
         <TextField
           label="Password"
@@ -193,7 +193,7 @@ const Register = () => {
           error={!!errors.password}
           helperText={errors.password}
           fullWidth
-          margin="normal"
+          margin="dense"
         />
         <Select
           label="Hospital"
@@ -204,7 +204,7 @@ const Register = () => {
           error={!!errors.hospitalId}
           fullWidth
           displayEmpty
-          margin="normal"
+          margin="dense"
         >
           <MenuItem value="" disabled>
             Select Hospital
