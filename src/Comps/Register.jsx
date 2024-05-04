@@ -90,13 +90,32 @@ const Register = () => {
   const handleChange = (event) => {
     const { name, value } = event.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+    // Same validation logic as before
+    if (name === "email" && !/^\S+@\S+\.\S+$/.test(value)) {
+      setErrors((prev) => ({ ...prev, email: "Invalid email address" }));
+    } else if (name === "password" && value.length < 8) {
+      setErrors((prev) => ({
+        ...prev,
+        password: "Password must be at least 8 characters",
+      }));
+    } else {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // Implement validation checks here before submitting the form
-    // Here you would typically also include a fetch or axios post request to your backend API
-    navigate("/main"); // Navigate to main dashboard after registration
+    // Ensure all fields are filled
+    if (
+      Object.values(form).every((x) => x !== "") &&
+      Object.values(errors).every((x) => x === "")
+    ) {
+      // Make the API call to register
+      console.log("Submitting form:", form);
+      navigate("/main"); // Navigate to main dashboard after registration
+    } else {
+      console.error("Validation errors:", errors);
+    }
   };
 
   return (
@@ -112,6 +131,8 @@ const Register = () => {
           name="email"
           value={form.email}
           onChange={handleChange}
+          error={!!errors.email}
+          helperText={errors.email}
           fullWidth
           margin="dense"
         />
@@ -122,6 +143,8 @@ const Register = () => {
           name="firstName"
           value={form.firstName}
           onChange={handleChange}
+          error={!!errors.firstName}
+          helperText={errors.firstName}
           fullWidth
           margin="dense"
         />
@@ -132,6 +155,8 @@ const Register = () => {
           name="lastName"
           value={form.lastName}
           onChange={handleChange}
+          error={!!errors.lastName}
+          helperText={errors.lastName}
           fullWidth
           margin="dense"
         />
@@ -142,6 +167,8 @@ const Register = () => {
           name="password"
           value={form.password}
           onChange={handleChange}
+          error={!!errors.password}
+          helperText={errors.password}
           fullWidth
           margin="dense"
         />
@@ -151,6 +178,7 @@ const Register = () => {
           name="hospitalId"
           value={form.hospitalId}
           onChange={handleChange}
+          error={!!errors.hospitalId}
           fullWidth
           displayEmpty
           margin="dense"
