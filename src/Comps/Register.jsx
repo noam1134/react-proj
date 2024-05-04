@@ -196,7 +196,7 @@ const Register = () => {
           margin="dense"
         />
         <Select
-          label="Hospital"
+        
           variant="outlined"
           name="hospitalId"
           value={form.hospitalId}
@@ -224,7 +224,7 @@ const Register = () => {
           accept="image/*"
           type="file"
           onChange={handleImageChange}
-          style={{ display: "block", marginBottom: "20px" }}
+          style={{ display: "block", marginTop: "20px", marginBottom: "20px" }}
         />
         {errors.image && (
           <Typography color="error" style={{ marginBottom: "20px" }}>
