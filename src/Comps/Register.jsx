@@ -47,7 +47,6 @@ const Register = () => {
         cloudName: "dzl5twp4b",
         uploadPreset: "esseufv8",
         sources: ["local", "url", "camera", "image_search"],
-        googleApiKey: "<YOUR_GOOGLE_API_KEY>", // Include if using image_search
         showAdvancedOptions: true,
         cropping: true,
         multiple: false,
