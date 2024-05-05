@@ -65,7 +65,6 @@ const Register = () => {
         (error, result) => {
           console.log(result);
           if (!error && result && result.event === "success") {
-            form.firstName = JSON.stringify(result.info.secure_url);
             setForm((prev) => ({
               ...prev,
               image: result.info.secure_url,
