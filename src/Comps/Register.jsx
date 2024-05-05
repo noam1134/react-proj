@@ -196,7 +196,6 @@ const Register = () => {
           margin="dense"
         />
         <Select
-        
           variant="outlined"
           name="hospitalId"
           value={form.hospitalId}
@@ -222,8 +221,9 @@ const Register = () => {
         )}
         <input
           accept="image/*"
-          type="file"
-          onChange={handleImageChange}
+          type="button"
+          value="Upload Image"
+          onClick={openWidget}
           style={{ display: "block", marginTop: "20px", marginBottom: "20px" }}
         />
         {errors.image && (
