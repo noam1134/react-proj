@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { TextField, Button, Box, Typography, Link } from "@mui/material";
-import { useNavigate } from "react-router-dom";  // Import useNavigate
+import { TextField, Button, Box, Typography } from "@mui/material";
+import { useNavigate, Link } from "react-router-dom"; // Ensure Link is imported from 'react-router-dom'
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate();  // Initialize useNavigate
+  const navigate = useNavigate();
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -25,8 +25,8 @@ const Login = () => {
       if (response.ok) {
         console.log("Login successful:", data);
         const { password, ...managerDetails } = data; // Exclude password
-        sessionStorage.setItem('user', JSON.stringify(managerDetails));
-        navigate('/main');  // Navigate to the main page
+        sessionStorage.setItem("user", JSON.stringify(managerDetails));
+        navigate("/main"); // Navigate to the main page
       } else {
         setError(data.message || "Login failed");
       }
@@ -87,7 +87,12 @@ const Login = () => {
         </Button>
         <Typography variant="body2" align="center">
           Don't have an account?{" "}
-          <Link href="/register" color="primary">
+          <Link
+            to="/register"
+            color="primary"
+            style={{ textDecoration: "none" }}
+          >
+            {" "}
             Register
           </Link>
         </Typography>
