@@ -16,16 +16,16 @@ const Register = () => {
     firstName: "",
     lastName: "",
     password: "",
+    imagePath: "",
     hospitalId: "",
-    image: "",
   });
   const [errors, setErrors] = useState({
     email: "",
     firstName: "",
     lastName: "",
     password: "",
+    imagePath: "",
     hospitalId: "",
-    image: "",
   });
   const navigate = useNavigate();
 
@@ -66,12 +66,12 @@ const Register = () => {
           console.log(result);
           if (!error && result && result.event === "success") {
             console.log(result.info.secure_url);
-            form.image = result.info.secure_url;
+            form.imagePath = result.info.secure_url;
             setForm((prev) => ({
               ...prev,
-              image: result.info.secure_url,
+              imagePath: result.info.secure_url,
             }));
-            setErrors((prev) => ({ ...prev, image: "" }));
+            setErrors((prev) => ({ ...prev, imagePath: "" }));
           }
         }
       )
@@ -135,15 +135,16 @@ const Register = () => {
       !errors.firstName &&
       !errors.lastName &&
       !errors.hospitalId &&
-      !errors.image &&
+      !errors.imagePath &&
       form.email &&
       form.password &&
       form.firstName &&
       form.lastName &&
       form.hospitalId &&
-      form.image
+      form.imagePath
     ) {
       try {
+        console.log(form);
         const response = await fetch(
           "https://localhost:7115/api/HospitalManager/Registration",
           {
@@ -151,6 +152,7 @@ const Register = () => {
             headers: {
               "Content-Type": "application/json",
             },
+
             body: JSON.stringify(form),
           }
         );
@@ -268,9 +270,9 @@ const Register = () => {
           onClick={openWidget}
           style={{ display: "block", marginTop: "20px", marginBottom: "20px" }}
         />
-        {errors.image && (
+        {errors.imagePath && (
           <Typography color="error" style={{ marginBottom: "20px" }}>
-            {errors.image}
+            {errors.imagePath}
           </Typography>
         )}
         <Button type="submit" variant="contained" color="primary" fullWidth>

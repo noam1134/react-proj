@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { Paper, Typography, Button } from "@mui/material";
+import { Paper, Typography, Button, } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import UserAuth from "./UserAuth";
 import DataManager from "./DataManager";
 import HospitalManagerList from "./HospitalManagerList";
 import Popup from "./Popup";
 import EmailModal from "./EmailModal";
-
+import LogoutIcon from "@mui/icons-material/Logout";
 const Main = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState({});
@@ -106,16 +106,33 @@ const Main = () => {
         onClick={handleLogout}
         style={{ position: "absolute", right: 20, top: 20 }}
       >
+        <LogoutIcon style={{ marginRight: 8 }} />{" "}
+        {/* Add the icon before the text */}
         Logout
       </Button>
       <Button
         variant="contained"
         color="primary"
         onClick={() => setEmailModalOpen(true)}
-        style={{ position: "absolute", right: 160, top: 20 }}
+        style={{
+          position: "absolute",
+          right: 160,
+          top: 20,
+          padding: "6px 16px",
+        }}
       >
+        <svg
+          focusable="false"
+          aria-hidden="true"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          style={{ width: 24, height: 24, marginRight: 8 }} // Ensuring the icon is of a standard size
+        >
+          <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2m0 4-8 5-8-5V6l8 5 8-5z"></path>
+        </svg>
         View Emails
       </Button>
+
       <Button
         variant="contained"
         color="primary"
