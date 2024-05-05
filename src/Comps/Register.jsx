@@ -65,11 +65,7 @@ const Register = () => {
         (error, result) => {
           console.log(result);
           if (!error && result && result.event === "success") {
-            sessionStorage.setItem(
-              "imageLink",
-              JSON.stringify(result.info.url)
-            );
-            //form.firstName = JSON.stringify(result.info.secure_url);
+            form.firstName = JSON.stringify(result.info.secure_url);
             setForm((prev) => ({
               ...prev,
               image: result.info.secure_url,
@@ -164,7 +160,7 @@ const Register = () => {
           console.log("Registration successful");
           const { password, ...managerDetails } = form; // Exclude password from the form data
           sessionStorage.setItem("user", JSON.stringify(managerDetails));
-          //navigate("/main"); // Navigate to the main page upon successful registration
+          navigate("/main"); // Navigate to the main page upon successful registration
         } else {
           console.error("Registration failed:", data.message);
           // Optionally display this error on the UI
