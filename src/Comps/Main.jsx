@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Paper, Typography, Button, } from "@mui/material";
+import React, { useState, useEffect, useRef } from "react";
+import { Paper, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import UserAuth from "./UserAuth";
 import DataManager from "./DataManager";
@@ -7,6 +7,7 @@ import HospitalManagerList from "./HospitalManagerList";
 import Popup from "./Popup";
 import EmailModal from "./EmailModal";
 import LogoutIcon from "@mui/icons-material/Logout";
+
 const Main = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState({});
@@ -18,8 +19,10 @@ const Main = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [emails, setEmails] = useState([]);
   const emailsPerPage = 6;
+  const [pdfVisible, setPdfVisible] = useState(false);
+  const [pdfPath, setPdfPath] = useState("");
+  const iframeRef = useRef(null);
 
-  // Now, emails state will be correctly handled by DataManager
   const { hospitalManagers } = DataManager({
     user,
     setSelectedManager,
@@ -72,18 +75,34 @@ const Main = () => {
   };
 
   const openPdf = () => {
-    const hospitalPath =
-      "./src/data/hospital_" + (user && user.hospitalId) + ".pdf";
-    window.open(hospitalPath, "_blank");
+    const path = "./src/data/hospital_" + (user && user.hospitalId) + ".pdf";
+    setPdfPath(path);
+    setPdfVisible(true);
   };
 
-  const indexOfLastEmail = currentPage * emailsPerPage;
-  const indexOfFirstEmail = indexOfLastEmail - emailsPerPage;
-  const currentEmails = emails.slice(indexOfFirstEmail, indexOfLastEmail);
-  const totalPages = Math.ceil(emails.length / emailsPerPage);
+  const closePdf = () => {
+    setPdfVisible(false);
+  };
+
+  const handleClickOutside = (event) => {
+    if (
+      pdfVisible &&
+      iframeRef.current &&
+      !iframeRef.current.contains(event.target)
+    ) {
+      closePdf();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [pdfVisible]);
 
   const handleNextPage = () => {
-    if (currentPage < totalPages) {
+    if (currentPage < Math.ceil(emails.length / emailsPerPage)) {
       setCurrentPage(currentPage + 1);
     }
   };
@@ -106,8 +125,7 @@ const Main = () => {
         onClick={handleLogout}
         style={{ position: "absolute", right: 20, top: 20 }}
       >
-        <LogoutIcon style={{ marginRight: 8 }} />{" "}
-        {/* Add the icon before the text */}
+        <LogoutIcon style={{ marginRight: 8 }} />
         Logout
       </Button>
       <Button
@@ -121,18 +139,8 @@ const Main = () => {
           padding: "6px 16px",
         }}
       >
-        <svg
-          focusable="false"
-          aria-hidden="true"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          style={{ width: 24, height: 24, marginRight: 8 }} // Ensuring the icon is of a standard size
-        >
-          <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2m0 4-8 5-8-5V6l8 5 8-5z"></path>
-        </svg>
         View Emails
       </Button>
-
       <Button
         variant="contained"
         color="primary"
@@ -157,12 +165,39 @@ const Main = () => {
       <EmailModal
         open={emailModalOpen}
         onClose={() => setEmailModalOpen(false)}
-        currentEmails={currentEmails}
+        currentEmails={emails.slice(
+          (currentPage - 1) * emailsPerPage,
+          currentPage * emailsPerPage
+        )}
         handlePreviousPage={handlePreviousPage}
         handleNextPage={handleNextPage}
         currentPage={currentPage}
-        totalPages={totalPages}
+        totalPages={Math.ceil(emails.length / emailsPerPage)}
       />
+      {pdfVisible && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <iframe
+            ref={iframeRef}
+            src={pdfPath}
+            width="70%" 
+            height="80%" 
+            style={{ border: "none", boxShadow: "0 4px 8px rgba(0,0,0,0.5)" }}
+            title="Hospital Report"
+          />
+        </div>
+      )}
     </Paper>
   );
 };

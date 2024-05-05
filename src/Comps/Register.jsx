@@ -27,6 +27,7 @@ const Register = () => {
     imagePath: "",
     hospitalId: "",
   });
+  const [imageUploadSuccess, setImageUploadSuccess] = useState(false); // New state for image upload success
   const navigate = useNavigate();
 
   const [widget, setWidget] = useState(null);
@@ -63,15 +64,14 @@ const Register = () => {
           },
         },
         (error, result) => {
-          console.log(result);
           if (!error && result && result.event === "success") {
             console.log(result.info.secure_url);
-            form.imagePath = result.info.secure_url;
             setForm((prev) => ({
               ...prev,
               imagePath: result.info.secure_url,
             }));
             setErrors((prev) => ({ ...prev, imagePath: "" }));
+            setImageUploadSuccess(true); // Set the success state
           }
         }
       )
@@ -80,6 +80,28 @@ const Register = () => {
 
   const openWidget = () => {
     widget.open();
+  };
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+
+    let error = "";
+    if (name === "email") {
+      error = validateEmail(value) ? "" : "Invalid email address";
+    } else if (name === "password") {
+      error = validatePassword(value)
+        ? ""
+        : "Password should be at least 8 characters long and include at least one letter and one number";
+    } else if (name === "firstName") {
+      error = value ? "" : "First name is required";
+    } else if (name === "lastName") {
+      error = value ? "" : "Last name is required";
+    } else if (name === "hospitalId") {
+      error = value ? "" : "Hospital ID is required";
+    }
+
+    setErrors((prev) => ({ ...prev, [name]: error }));
   };
 
   const validateEmail = (email) => {
@@ -93,58 +115,25 @@ const Register = () => {
     return re.test(password);
   };
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-
-    if (name === "email") {
-      setErrors((prev) => ({
-        ...prev,
-        email: validateEmail(value) ? "" : "Invalid email address",
-      }));
-    } else if (name === "password") {
-      setErrors((prev) => ({
-        ...prev,
-        password: validatePassword(value)
-          ? ""
-          : "Password should be at least 8 characters long and include at least one letter and one number",
-      }));
-    } else if (name === "firstName") {
-      setErrors((prev) => ({
-        ...prev,
-        firstName: value ? "" : "First name is required",
-      }));
-    } else if (name === "lastName") {
-      setErrors((prev) => ({
-        ...prev,
-        lastName: value ? "" : "Last name is required",
-      }));
-    } else if (name === "hospitalId") {
-      setErrors((prev) => ({
-        ...prev,
-        hospitalId: value ? "" : "Hospital ID is required",
-      }));
-    }
-  };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (
-      !errors.email &&
-      !errors.password &&
-      !errors.firstName &&
-      !errors.lastName &&
-      !errors.hospitalId &&
-      !errors.imagePath &&
-      form.email &&
-      form.password &&
-      form.firstName &&
-      form.lastName &&
-      form.hospitalId &&
-      form.imagePath
-    ) {
+
+    const allErrors = {
+      email: validateEmail(form.email) ? "" : "Invalid email address",
+      password: validatePassword(form.password)
+        ? ""
+        : "Password should be at least 8 characters long and include at least one letter and one number",
+      firstName: form.firstName ? "" : "First name is required",
+      lastName: form.lastName ? "" : "Last name is required",
+      hospitalId: form.hospitalId ? "" : "Hospital ID is required",
+      imagePath: form.imagePath ? "" : "Image is required",
+    };
+    setErrors(allErrors);
+
+    const isValid = Object.values(allErrors).every((e) => e === "");
+
+    if (isValid) {
       try {
-        console.log(form);
         const response = await fetch(
           "https://localhost:7115/api/HospitalManager/Registration",
           {
@@ -152,7 +141,6 @@ const Register = () => {
             headers: {
               "Content-Type": "application/json",
             },
-
             body: JSON.stringify(form),
           }
         );
@@ -164,18 +152,10 @@ const Register = () => {
           navigate("/main"); // Navigate to the main page upon successful registration
         } else {
           console.error("Registration failed:", data.message);
-          // Optionally display this error on the UI
         }
       } catch (error) {
         console.error("Error during registration:", error);
-        // Optionally display this error on the UI
       }
-    } else {
-      // If any field is invalid or empty, set an error for the hospital select
-      setErrors((prev) => ({
-        ...prev,
-        hospitalId: form.hospitalId ? "" : "Hospital is required",
-      }));
     }
   };
 
@@ -268,8 +248,16 @@ const Register = () => {
           type="button"
           value="Upload Image"
           onClick={openWidget}
-          style={{ display: "block", marginTop: "20px", marginBottom: "20px" }}
+          style={{ display: "block", margin: "auto" }}
         />
+        {imageUploadSuccess && (
+          <Typography
+            color="primary"
+            style={{ marginBottom: "20px", textAlign: "center" }}
+          >
+            Image uploaded successfully!
+          </Typography>
+        )}
         {errors.imagePath && (
           <Typography color="error" style={{ marginBottom: "20px" }}>
             {errors.imagePath}
