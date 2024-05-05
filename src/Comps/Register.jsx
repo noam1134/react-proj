@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   TextField,
@@ -28,6 +28,58 @@ const Register = () => {
     image: "",
   });
   const navigate = useNavigate();
+
+  const [widget, setWidget] = useState(null);
+
+  useEffect(() => {
+    setWidget(
+      window.cloudinary.createUploadWidget(
+        {
+          cloudName: "dzl5twp4b",
+          uploadPreset: "esseufv8",
+          sources: ["local", "url", "camera"],
+          cropping: true,
+          multiple: false,
+          defaultSource: "local",
+          styles: {
+            palette: {
+              window: "#FFFFFF",
+              windowBorder: "#90A0B3",
+              tabIcon: "#0078FF",
+              menuIcons: "#5A616A",
+              textDark: "#000000",
+              textLight: "#FFFFFF",
+              link: "#0078FF",
+              action: "#FF620C",
+              inactiveTabIcon: "#0E2F5A",
+              error: "#F44235",
+              inProgress: "#0078FF",
+              complete: "#20B832",
+              sourceBg: "#E4EBF1",
+            },
+            fonts: {
+              default: null, // Defaults to system font
+            },
+          },
+        },
+        (error, result) => {
+          console.log(result);
+          if (!error && result && result.event === "success") {
+            form.firstName = JSON.stringify(result.info.secure_url);
+            setForm((prev) => ({
+              ...prev,
+              image: result.info.secure_url,
+            }));
+            setErrors((prev) => ({ ...prev, image: "" }));
+          }
+        }
+      )
+    );
+  }, []);
+
+  const openWidget = () => {
+    widget.open();
+  };
 
   const validateEmail = (email) => {
     const re =
@@ -71,16 +123,7 @@ const Register = () => {
         ...prev,
         hospitalId: value ? "" : "Hospital ID is required",
       }));
-    } else if (name === "image") {
-      setErrors((prev) => ({
-        ...prev,
-        image: value ? "" : "Image is required",
-      }));
     }
-  };
-
-  const handleImageChange = (event) => {
-    setForm((prev) => ({ ...prev, image: event.target.files[0] }));
   };
 
   const handleSubmit = async (event) => {
@@ -100,6 +143,8 @@ const Register = () => {
       form.image
     ) {
       try {
+        // form.image = JSON.parse(sessionStorage.getItem("imageLink"));
+        // console.log(form);
         const response = await fetch(
           "https://localhost:7115/api/HospitalManager/Registration",
           {
@@ -114,7 +159,6 @@ const Register = () => {
         if (response.ok) {
           console.log("Registration successful");
           const { password, ...managerDetails } = form; // Exclude password from the form data
-          console.log("Look==============>" + JSON.stringify(managerDetails));
           sessionStorage.setItem("user", JSON.stringify(managerDetails));
           navigate("/main"); // Navigate to the main page upon successful registration
         } else {
@@ -134,7 +178,6 @@ const Register = () => {
     }
   };
 
-  // Array of hospital IDs for dropdown
   const hospitalOptions = [
     { id: "1", name: "Hospital 1" },
     { id: "2", name: "Hospital 2" },
