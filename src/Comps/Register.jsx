@@ -29,93 +29,163 @@ const Register = () => {
   });
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Load Cloudinary script and initialize widget on mount
-    if (!window.cloudinary) {
-      const script = document.createElement("script");
-      script.src = "https://widget.cloudinary.com/v2.0/global/all.js";
-      script.onload = () => initializeWidget();
-      document.body.appendChild(script);
-    } else {
-      initializeWidget();
-    }
-  }, []);
+  const [widget, setWidget] = useState(null);
 
-  const initializeWidget = () => {
-    const myWidget = window.cloudinary.createUploadWidget(
-      {
-        cloudName: "dzl5twp4b",
-        uploadPreset: "esseufv8",
-        sources: ["local", "url", "camera", "image_search"],
-        showAdvancedOptions: true,
-        cropping: true,
-        multiple: false,
-        defaultSource: "local",
-        styles: {
-          palette: {
-            window: "#FFFFFF",
-            windowBorder: "#90A0B3",
-            tabIcon: "#0078FF",
-            menuIcons: "#5A616A",
-            textDark: "#000000",
-            textLight: "#FFFFFF",
-            link: "#0078FF",
-            action: "#FF620C",
-            inactiveTabIcon: "#0E2F5A",
-            error: "#F44235",
-            inProgress: "#0078FF",
-            complete: "#20B832",
-            sourceBg: "#E4EBF1",
+  useEffect(() => {
+    setWidget(
+      window.cloudinary.createUploadWidget(
+        {
+          cloudName: "dzl5twp4b",
+          uploadPreset: "esseufv8",
+          sources: ["local", "url", "camera"],
+          cropping: true,
+          multiple: false,
+          defaultSource: "local",
+          styles: {
+            palette: {
+              window: "#FFFFFF",
+              windowBorder: "#90A0B3",
+              tabIcon: "#0078FF",
+              menuIcons: "#5A616A",
+              textDark: "#000000",
+              textLight: "#FFFFFF",
+              link: "#0078FF",
+              action: "#FF620C",
+              inactiveTabIcon: "#0E2F5A",
+              error: "#F44235",
+              inProgress: "#0078FF",
+              complete: "#20B832",
+              sourceBg: "#E4EBF1",
+            },
+            fonts: {
+              default: null, // Defaults to system font
+            },
           },
         },
-      },
-      (error, result) => {
-        if (!error && result && result.event === "success") {
-          console.log("Done! Here is the image info: ", result.info);
-          setForm((prev) => ({ ...prev, image: result.info.secure_url }));
+        (error, result) => {
+          console.log(result);
+          if (!error && result && result.event === "success") {
+            // sessionStorage.setItem(
+            //   "imageLink",
+            //   JSON.stringify(result.info.url)
+            // );
+            form.image = result.info.secure_url;
+            setForm((prev) => ({
+              ...prev,
+              image: result.info.secure_url,
+            }));
+            setErrors((prev) => ({ ...prev, image: "" }));
+          }
         }
-      }
+      )
     );
+  }, []);
 
-    document.getElementById("upload_widget").addEventListener(
-      "click",
-      function () {
-        myWidget.open();
-      },
-      false
-    );
+  const openWidget = () => {
+    widget.open();
+  };
+
+  const validateEmail = (email) => {
+    const re =
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+  };
+
+  const validatePassword = (password) => {
+    const re = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // Minimum eight characters, at least one letter and one number
+    return re.test(password);
   };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setForm((prev) => ({ ...prev, [name]: value }));
-    // Same validation logic as before
-    if (name === "email" && !/^\S+@\S+\.\S+$/.test(value)) {
-      setErrors((prev) => ({ ...prev, email: "Invalid email address" }));
-    } else if (name === "password" && value.length < 8) {
+
+    if (name === "email") {
       setErrors((prev) => ({
         ...prev,
-        password: "Password must be at least 8 characters",
+        email: validateEmail(value) ? "" : "Invalid email address",
       }));
-    } else {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
+    } else if (name === "password") {
+      setErrors((prev) => ({
+        ...prev,
+        password: validatePassword(value)
+          ? ""
+          : "Password should be at least 8 characters long and include at least one letter and one number",
+      }));
+    } else if (name === "firstName") {
+      setErrors((prev) => ({
+        ...prev,
+        firstName: value ? "" : "First name is required",
+      }));
+    } else if (name === "lastName") {
+      setErrors((prev) => ({
+        ...prev,
+        lastName: value ? "" : "Last name is required",
+      }));
+    } else if (name === "hospitalId") {
+      setErrors((prev) => ({
+        ...prev,
+        hospitalId: value ? "" : "Hospital ID is required",
+      }));
     }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // Ensure all fields are filled
     if (
-      Object.values(form).every((x) => x !== "") &&
-      Object.values(errors).every((x) => x === "")
+      !errors.email &&
+      !errors.password &&
+      !errors.firstName &&
+      !errors.lastName &&
+      !errors.hospitalId &&
+      !errors.image &&
+      form.email &&
+      form.password &&
+      form.firstName &&
+      form.lastName &&
+      form.hospitalId &&
+      form.image
     ) {
-      // Make the API call to register
-      console.log("Submitting form:", form);
-      navigate("/main"); // Navigate to main dashboard after registration
+      try {
+        const response = await fetch(
+          "https://localhost:7115/api/HospitalManager/Registration",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(form),
+          }
+        );
+        const data = await response.json();
+        if (response.ok) {
+          console.log("Registration successful");
+          const { password, ...managerDetails } = form; // Exclude password from the form data
+          sessionStorage.setItem("user", JSON.stringify(managerDetails));
+          console.log(form);
+          // Navigate to the main page upon successful registration
+        } else {
+          console.error("Registration failed:", data.message);
+          // Optionally display this error on the UI
+        }
+      } catch (error) {
+        console.error("Error during registration:", error);
+        // Optionally display this error on the UI
+      }
     } else {
-      console.error("Validation errors:", errors);
+      // If any field is invalid or empty, set an error for the hospital select
+      setErrors((prev) => ({
+        ...prev,
+        hospitalId: form.hospitalId ? "" : "Hospital is required",
+      }));
     }
   };
+
+  const hospitalOptions = [
+    { id: "1", name: "Hospital 1" },
+    { id: "2", name: "Hospital 2" },
+    { id: "3", name: "Hospital 3" },
+  ];
 
   return (
     <Box className="registerForm">
@@ -172,7 +242,6 @@ const Register = () => {
           margin="dense"
         />
         <Select
-          label="Select Hospital"
           variant="outlined"
           name="hospitalId"
           value={form.hospitalId}
@@ -182,29 +251,31 @@ const Register = () => {
           displayEmpty
           margin="dense"
         >
-          {/* Populate these options based on your actual data */}
-          <MenuItem value="">Select Hospital</MenuItem>
-          <MenuItem value="1">Hospital 1</MenuItem>
-          <MenuItem value="2">Hospital 2</MenuItem>
-          <MenuItem value="3">Hospital 3</MenuItem>
+          <MenuItem value="" disabled>
+            Select Hospital
+          </MenuItem>
+          {hospitalOptions.map((hospital) => (
+            <MenuItem key={hospital.id} value={hospital.id}>
+              {hospital.name}
+            </MenuItem>
+          ))}
         </Select>
-        <Button
-          id="upload_widget"
+        {errors.hospitalId && (
+          <Typography color="error" style={{ marginBottom: "20px" }}>
+            {errors.hospitalId}
+          </Typography>
+        )}
+        <input
+          accept="image/*"
           type="button"
-          variant="contained"
-          color="primary"
-          fullWidth
-        >
-          Upload Image
-        </Button>
-        {form.image && (
-          <Box mt={2} mb={2}>
-            <img
-              src={form.image}
-              alt="Uploaded Profile"
-              style={{ width: "100%" }}
-            />
-          </Box>
+          value="Upload Image"
+          onClick={openWidget}
+          style={{ display: "block", marginTop: "20px", marginBottom: "20px" }}
+        />
+        {errors.image && (
+          <Typography color="error" style={{ marginBottom: "20px" }}>
+            {errors.image}
+          </Typography>
         )}
         <Button type="submit" variant="contained" color="primary" fullWidth>
           Register
