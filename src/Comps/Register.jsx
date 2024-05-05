@@ -69,7 +69,7 @@ const Register = () => {
               "imageLink",
               JSON.stringify(result.info.url)
             );
-            form.image = result.info.secure_url;
+            //form.firstName = JSON.stringify(result.info.secure_url);
             setForm((prev) => ({
               ...prev,
               image: result.info.secure_url,
@@ -147,6 +147,8 @@ const Register = () => {
       form.image
     ) {
       try {
+        // form.image = JSON.parse(sessionStorage.getItem("imageLink"));
+        // console.log(form);
         const response = await fetch(
           "https://localhost:7115/api/HospitalManager/Registration",
           {
@@ -162,7 +164,7 @@ const Register = () => {
           console.log("Registration successful");
           const { password, ...managerDetails } = form; // Exclude password from the form data
           sessionStorage.setItem("user", JSON.stringify(managerDetails));
-          navigate("/main"); // Navigate to the main page upon successful registration
+          //navigate("/main"); // Navigate to the main page upon successful registration
         } else {
           console.error("Registration failed:", data.message);
           // Optionally display this error on the UI
