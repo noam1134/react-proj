@@ -65,6 +65,7 @@ const Register = () => {
         (error, result) => {
           console.log(result);
           if (!error && result && result.event === "success") {
+            form.image = result.info.secure_url;
             setForm((prev) => ({
               ...prev,
               image: result.info.secure_url,
@@ -142,8 +143,6 @@ const Register = () => {
       form.image
     ) {
       try {
-        // form.image = JSON.parse(sessionStorage.getItem("imageLink"));
-        // console.log(form);
         const response = await fetch(
           "https://localhost:7115/api/HospitalManager/Registration",
           {
