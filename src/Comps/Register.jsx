@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import "./styles.css";
+import { apiLink } from "./consts";
 
 const Register = () => {
   const [form, setForm] = useState({
@@ -27,7 +28,7 @@ const Register = () => {
     imagePath: "",
     hospitalId: "",
   });
-  const [imageUploadSuccess, setImageUploadSuccess] = useState(false); // New state for image upload success
+  const [imageUploadSuccess, setImageUploadSuccess] = useState(false); 
   const navigate = useNavigate();
 
   const [widget, setWidget] = useState(null);
@@ -59,7 +60,7 @@ const Register = () => {
               sourceBg: "#E4EBF1",
             },
             fonts: {
-              default: null, // Defaults to system font
+              default: null, 
             },
           },
         },
@@ -71,7 +72,7 @@ const Register = () => {
               imagePath: result.info.secure_url,
             }));
             setErrors((prev) => ({ ...prev, imagePath: "" }));
-            setImageUploadSuccess(true); // Set the success state
+            setImageUploadSuccess(true);
           }
         }
       )
@@ -111,7 +112,7 @@ const Register = () => {
   };
 
   const validatePassword = (password) => {
-    const re = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // Minimum eight characters, at least one letter and one number
+    const re = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; 
     return re.test(password);
   };
 
@@ -135,7 +136,7 @@ const Register = () => {
     if (isValid) {
       try {
         const response = await fetch(
-          "https://localhost:7115/api/HospitalManager/Registration",
+          apiLink + `HospitalManager/Registration`,
           {
             method: "POST",
             headers: {
@@ -149,7 +150,7 @@ const Register = () => {
           console.log("Registration successful");
           const { password, ...managerDetails } = form; // Exclude password from the form data
           sessionStorage.setItem("user", JSON.stringify(managerDetails));
-          navigate("/main"); // Navigate to the main page upon successful registration
+          navigate("/main"); 
         } else {
           console.error("Registration failed:", data.message);
         }

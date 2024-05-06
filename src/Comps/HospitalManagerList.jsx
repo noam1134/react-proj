@@ -5,26 +5,16 @@ import {
   CardContent,
   Typography,
   IconButton,
-  Tooltip,
-  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import EmailIcon from "@mui/icons-material/Email";
-import ViewListIcon from "@mui/icons-material/ViewList";
-import ViewModuleIcon from "@mui/icons-material/ViewModule";
 
 const HospitalManagerList = ({
   hospitalManagers,
   handleSendEmail,
   viewType,
-  setViewType,
 }) => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
-  const toggleView = () => {
-    setViewType(viewType === "grid" ? "list" : "grid");
-  };
 
   return (
     <>
@@ -52,8 +42,8 @@ const HospitalManagerList = ({
                 src={manager.imagePath}
                 alt={`${manager.firstName} ${manager.lastName}`}
                 sx={{
-                  width: 72, // Increased from 56 to 72
-                  height: 72, // Increased from 56 to 72
+                  width: 72, 
+                  height: 72,
                   m: 2,
                   boxShadow: theme.shadows[3],
                 }}

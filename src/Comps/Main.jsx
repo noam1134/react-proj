@@ -7,6 +7,7 @@ import HospitalManagerList from "./HospitalManagerList";
 import Popup from "./Popup";
 import EmailModal from "./EmailModal";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { apiLink } from "./consts";
 
 const Main = () => {
   const navigate = useNavigate();
@@ -55,7 +56,7 @@ const Main = () => {
       content: emailContent,
       sendingDate: new Date(),
     };
-    fetch("https://localhost:7115/api/Mail/SendMail", {
+    fetch(apiLink + `Mail/SendMail`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(mailData),
@@ -191,8 +192,8 @@ const Main = () => {
           <iframe
             ref={iframeRef}
             src={pdfPath}
-            width="70%" 
-            height="80%" 
+            width="70%"
+            height="80%"
             style={{ border: "none", boxShadow: "0 4px 8px rgba(0,0,0,0.5)" }}
             title="Hospital Report"
           />

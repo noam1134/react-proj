@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { TextField, Button, Box, Typography } from "@mui/material";
-import { useNavigate, Link } from "react-router-dom"; // Ensure Link is imported from 'react-router-dom'
+import { useNavigate, Link } from "react-router-dom"; 
+import { apiLink } from "./consts";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -12,7 +13,8 @@ const Login = () => {
     event.preventDefault();
     try {
       const response = await fetch(
-        `https://localhost:7115/api/HospitalManager/LogIn?emailToLogin=${email}&passwordToLogin=${password}`,
+        apiLink +
+          `HospitalManager/LogIn?emailToLogin=${email}&passwordToLogin=${password}`,
         {
           method: "POST",
           headers: {
@@ -23,7 +25,6 @@ const Login = () => {
       );
       const data = await response.json();
       if (response.ok) {
-        console.log("Login successful:", data);
         const { password, ...managerDetails } = data; // Exclude password
         sessionStorage.setItem("user", JSON.stringify(managerDetails));
         navigate("/main"); // Navigate to the main page

@@ -17,6 +17,8 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { apiLink } from "./consts";
+
 
 const CustomScroll = styled("div")(({ theme }) => ({
   height: "50vh",
@@ -94,7 +96,7 @@ function EmailModal({
     console.log("Attempting to delete email with ID:", emailToDelete);
     try {
       const response = await fetch(
-        `https://localhost:7115/api/Mail/DeleteEmailFromInbox?emailId=${emailToDelete}`,
+        apiLink + `Mail/DeleteEmailFromInbox?emailId=${emailToDelete}`,
         {
           method: "POST",
           headers: {
@@ -108,7 +110,7 @@ function EmailModal({
       }
 
       setEmails(emails.filter((email) => email.emailId !== emailToDelete));
-      setExpanded(null); // Reset expanded state to collapse all accordions
+      setExpanded(null); 
       console.log("Email deleted successfully!");
       setConfirmDelete(false);
     } catch (error) {
@@ -155,7 +157,9 @@ function EmailModal({
                 <Typography variant="body2">{email.content}</Typography>
                 <Typography variant="caption" color="textSecondary">
                   Sent on: {new Date(email.sendingDate).toLocaleString()}
+                  {console.log(email)}
                 </Typography>
+
                 <IconButton
                   aria-label="delete"
                   color="error"
