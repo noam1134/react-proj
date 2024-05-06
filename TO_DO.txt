@@ -1,4 +1,0 @@
-- Check why ImagePath is not saved in the SQL database upon registration.
-- Make some kind of effect to implicate the registration was not successful.
-- Show profile pictures of users.
-
