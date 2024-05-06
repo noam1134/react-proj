@@ -31,10 +31,9 @@ function App() {
       <BrowserRouter>
         <div className="App">
           <Routes>
-            <Route path="/" element={<Navigate to="/main" />} />
+            <Route path="/" element={<Main />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/main" element={<Main />} />
           </Routes>
         </div>
       </BrowserRouter>
