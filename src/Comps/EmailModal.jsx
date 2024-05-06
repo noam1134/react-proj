@@ -157,7 +157,6 @@ function EmailModal({
                 <Typography variant="body2">{email.content}</Typography>
                 <Typography variant="caption" color="textSecondary">
                   Sent on: {new Date(email.sendingDate).toLocaleString()}
-                  {console.log(email)}
                 </Typography>
 
                 <IconButton

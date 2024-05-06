@@ -42,7 +42,6 @@ const DataManager = ({
         .then((response) => response.json())
         .then((data) => {
           setLocalEmails(data);
-          console.log(data)
           setExternalEmails(data); 
         })
         .catch((error) => console.error("Error fetching emails:", error));

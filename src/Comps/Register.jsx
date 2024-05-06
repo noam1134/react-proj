@@ -66,7 +66,6 @@ const Register = () => {
         },
         (error, result) => {
           if (!error && result && result.event === "success") {
-            console.log(result.info.secure_url);
             setForm((prev) => ({
               ...prev,
               imagePath: result.info.secure_url,
