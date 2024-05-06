@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { styled } from "@mui/material/styles";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -18,7 +19,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 // Styled component for custom scrollbar and Accordion
 const CustomScroll = styled("div")(({ theme }) => ({
   height: "50vh",
-  overflowY: "scroll", // Changed from 'auto' to 'scroll' to always show the scrollbar
+  overflowY: "scroll",
   "&::-webkit-scrollbar": {
     width: "6px",
   },
@@ -33,46 +34,46 @@ const CustomScroll = styled("div")(({ theme }) => ({
 
 const StyledAccordion = styled(Accordion)(({ theme }) => ({
   transition: "background-color 0.3s, box-shadow 0.3s",
-  cursor: "pointer", // Indicates it's clickable
-  margin: theme.spacing(1), // Adds space around each accordion
-  boxShadow: "none", // Starts with no shadow
+  cursor: "pointer",
+  margin: theme.spacing(1),
+  boxShadow: "none",
   "&:hover, &:hover .MuiAccordionSummary-root": {
-    backgroundColor: theme.palette.grey[400], // Darker on hover
-    boxShadow: "0 2px 10px rgba(0,0,0,0.2)", // Shadow appears on hover
+    backgroundColor: theme.palette.grey[400],
+    boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
   },
   "& .MuiAccordionSummary-root": {
     backgroundColor: theme.palette.background.default,
     borderBottom: `2px solid ${theme.palette.divider}`,
-    padding: theme.spacing(1, 2), // Consistent padding
-    minHeight: "48px", // Fixed minimum height
+    padding: theme.spacing(1, 2),
+    minHeight: "48px",
     "&.Mui-expanded": {
       minHeight: "48px",
     },
   },
   "& .MuiAccordionSummary-content": {
-    margin: "0", // Fixing content margin
+    margin: "0",
     "&.Mui-expanded": {
-      margin: "0", // Maintains margin on expansion
+      margin: "0",
     },
   },
   "& .MuiAccordionDetails-root": {
     backgroundColor: theme.palette.grey[100],
-    padding: theme.spacing(2), // Details padding
+    padding: theme.spacing(2),
   },
 }));
 
-const EmailModal = ({
+function EmailModal({
   open,
   onClose,
   currentEmails,
   handlePreviousPage,
   handleNextPage,
+  handleDeleteEmail,
   currentPage,
   totalPages,
-}) => {
+}) {
   const [expanded, setExpanded] = useState(null);
 
-  // Reset expanded state whenever the currentPage changes
   useEffect(() => {
     setExpanded(null);
   }, [currentPage]);
@@ -99,7 +100,7 @@ const EmailModal = ({
                   sx={{
                     display: "flex",
                     justifyContent: "space-between",
-                    width: "98%",
+                    width: "100%",
                   }}
                 >
                   <Typography variant="subtitle1" sx={{ fontWeight: "medium" }}>
@@ -119,6 +120,14 @@ const EmailModal = ({
                 <Typography variant="caption" color="textSecondary">
                   Sent on: {new Date(email.sendingDate).toLocaleString()}
                 </Typography>
+                <IconButton
+                  aria-label="delete"
+                  color="error"
+                  onClick={() => handleDeleteEmail(email.emailID)}
+                  sx={{ mt: 1 }}
+                >
+                  <DeleteIcon />
+                </IconButton>
               </AccordionDetails>
             </StyledAccordion>
           ))}
@@ -146,6 +155,6 @@ const EmailModal = ({
       </Box>
     </Dialog>
   );
-};
+}
 
 export default EmailModal;

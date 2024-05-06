@@ -313,6 +313,7 @@ public class DBservices
             while (dataReader.Read())
             {
                 Mail mail = new Mail();
+                mail.EmailId = Convert.ToInt32(dataReader["EmailID"]);
                 mail.ToEmail = dataReader["ToEmail"].ToString();
                 mail.FromEmail = dataReader["FromEmail"].ToString();
                 mail.Subject = dataReader["EmailSubject"].ToString();
