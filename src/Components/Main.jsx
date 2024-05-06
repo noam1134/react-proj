@@ -153,7 +153,10 @@ const Main = () => {
       </Button>
 
       <Typography variant="h5" style={{ marginTop: 20, marginBottom: 10 }}>
-        Meet Our Hospital Managers
+        <br />
+        YOUR COLLEAGUES <br />
+        <br />
+
       </Typography>
       <HospitalManagerList
         hospitalManagers={hospitalManagers}
