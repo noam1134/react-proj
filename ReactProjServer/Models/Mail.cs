@@ -39,5 +39,9 @@
         {
             return dBservices.GetAllEmailsByManager(email);
         }
+        public static bool DeleteEmailByID(int emailId)
+        {
+            return dBservices.DeleteEmailByID(emailId);
+        }
     }
 }

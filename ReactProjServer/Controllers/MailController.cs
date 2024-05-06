@@ -22,5 +22,12 @@ namespace ReactProjServer.Controllers
         {
             return Mail.GetAllEmailsByManager(email);
         }
+
+        [HttpPost]
+        [Route("DeleteEmailFromInbox")]
+        public bool DeleteEmailFromInbox(int emailId)
+        {
+            return Mail.DeleteEmailByID(emailId);
+        }
     }
 }
