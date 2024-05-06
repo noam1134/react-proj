@@ -27,7 +27,7 @@ const Login = () => {
       if (response.ok) {
         const { password, ...managerDetails } = data; // Exclude password
         sessionStorage.setItem("user", JSON.stringify(managerDetails));
-        navigate("/"); // Navigate to the main page
+       // navigate("/"); // Navigate to the main page
       } else {
         setError(data.message || "Login failed");
       }

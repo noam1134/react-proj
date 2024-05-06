@@ -1,9 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Register from "./Comps/Register";
-import Login from "./Comps/Login";
-import Main from "./Comps/Main";
+import Register from "./Components/Register";
+import Login from "./Components/Login";
+import Main from "./Components/Main";
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import "./App.css";
 
