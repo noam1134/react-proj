@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { TextField, Button, Box, Typography } from "@mui/material";
-import { useNavigate, Link } from "react-router-dom"; 
+import { useNavigate, Link } from "react-router-dom";
 import { apiLink } from "./consts";
 
 const Login = () => {
@@ -27,7 +27,7 @@ const Login = () => {
       if (response.ok) {
         const { password, ...managerDetails } = data; // Exclude password
         sessionStorage.setItem("user", JSON.stringify(managerDetails));
-       // navigate("/"); // Navigate to the main page
+        navigate("/"); // Navigate to the main page
       } else {
         setError(data.message || "Login failed");
       }
