@@ -16,7 +16,6 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-// Styled component for custom scrollbar and Accordion
 const CustomScroll = styled("div")(({ theme }) => ({
   height: "50vh",
   overflowY: "scroll",
@@ -68,15 +67,17 @@ function EmailModal({
   currentEmails,
   handlePreviousPage,
   handleNextPage,
-  handleDeleteEmail,
   currentPage,
   totalPages,
 }) {
   const [expanded, setExpanded] = useState(null);
+  // State for storing current emails
+  const [emails, setEmails] = useState(currentEmails);
 
   useEffect(() => {
     setExpanded(null);
-  }, [currentPage]);
+    setEmails(currentEmails); // Update emails state when currentEmails prop changes
+  }, [currentEmails, currentPage]);
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : null);
@@ -84,12 +85,37 @@ function EmailModal({
 
   if (!open) return null;
 
+  const handleDeleteEmail = async (emailId) => {
+    console.log("Attempting to delete email with ID:", emailId);
+    try {
+      const response = await fetch(
+        `https://localhost:7115/api/Mail/DeleteEmailFromInbox?emailId=${emailId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to delete the email");
+      }
+
+      setEmails(emails.filter((email) => email.emailId !== emailId));
+      console.log("Email deleted successfully!");
+    } catch (error) {
+      console.error("Error:", error);
+      console.log("An error occurred while deleting the email.");
+    }
+  };
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>Email History</DialogTitle>
       <DialogContent dividers>
         <CustomScroll>
-          {currentEmails.map((email, index) => (
+          {emails.map((email, index) => (
             <StyledAccordion
               key={index}
               expanded={expanded === index}
@@ -123,7 +149,7 @@ function EmailModal({
                 <IconButton
                   aria-label="delete"
                   color="error"
-                  onClick={() => handleDeleteEmail(email.emailID)}
+                  onClick={() => handleDeleteEmail(email.emailId)}
                   sx={{ mt: 1 }}
                 >
                   <DeleteIcon />
