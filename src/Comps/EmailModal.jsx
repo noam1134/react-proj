@@ -3,6 +3,8 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  DialogActions,
+  Button,
   Typography,
   Box,
   IconButton,
@@ -71,25 +73,28 @@ function EmailModal({
   totalPages,
 }) {
   const [expanded, setExpanded] = useState(null);
-  // State for storing current emails
   const [emails, setEmails] = useState(currentEmails);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [emailToDelete, setEmailToDelete] = useState(null);
 
   useEffect(() => {
-    setExpanded(null);
-    setEmails(currentEmails); // Update emails state when currentEmails prop changes
+    setEmails(currentEmails);
   }, [currentEmails, currentPage]);
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : null);
   };
 
-  if (!open) return null;
+  const promptDeleteEmail = (emailId) => {
+    setEmailToDelete(emailId);
+    setConfirmDelete(true);
+  };
 
-  const handleDeleteEmail = async (emailId) => {
-    console.log("Attempting to delete email with ID:", emailId);
+  const handleDeleteEmail = async () => {
+    console.log("Attempting to delete email with ID:", emailToDelete);
     try {
       const response = await fetch(
-        `https://localhost:7115/api/Mail/DeleteEmailFromInbox?emailId=${emailId}`,
+        `https://localhost:7115/api/Mail/DeleteEmailFromInbox?emailId=${emailToDelete}`,
         {
           method: "POST",
           headers: {
@@ -102,13 +107,19 @@ function EmailModal({
         throw new Error("Failed to delete the email");
       }
 
-      setEmails(emails.filter((email) => email.emailId !== emailId));
+      setEmails(emails.filter((email) => email.emailId !== emailToDelete));
+      setExpanded(null); // Reset expanded state to collapse all accordions
       console.log("Email deleted successfully!");
+      setConfirmDelete(false);
     } catch (error) {
       console.error("Error:", error);
       console.log("An error occurred while deleting the email.");
+      setConfirmDelete(false);
     }
   };
+
+
+  if (!open) return null;
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
@@ -149,7 +160,7 @@ function EmailModal({
                 <IconButton
                   aria-label="delete"
                   color="error"
-                  onClick={() => handleDeleteEmail(email.emailId)}
+                  onClick={() => promptDeleteEmail(email.emailId)}
                   sx={{ mt: 1 }}
                 >
                   <DeleteIcon />
@@ -179,6 +190,18 @@ function EmailModal({
           <ArrowForwardIcon />
         </IconButton>
       </Box>
+      <Dialog open={confirmDelete} onClose={() => setConfirmDelete(false)}>
+        <DialogTitle>Confirm Deletion</DialogTitle>
+        <DialogContent>
+          <Typography>Are you sure you want to delete this email?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmDelete(false)}>Cancel</Button>
+          <Button onClick={handleDeleteEmail} color="error">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Dialog>
   );
 }
