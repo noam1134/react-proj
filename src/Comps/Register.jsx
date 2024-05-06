@@ -149,7 +149,7 @@ const Register = () => {
           console.log("Registration successful");
           const { password, ...managerDetails } = form; // Exclude password from the form data
           sessionStorage.setItem("user", JSON.stringify(managerDetails));
-          navigate("/main"); 
+          navigate("/"); 
         } else {
           console.error("Registration failed:", data.message);
         }
