@@ -151,6 +151,10 @@ const Main = () => {
       >
         Create Report
       </Button>
+
+      <Typography variant="h5" style={{ marginTop: 20, marginBottom: 10 }}>
+        Meet Our Hospital Managers
+      </Typography>
       <HospitalManagerList
         hospitalManagers={hospitalManagers}
         handleSendEmail={handleSendEmail}
