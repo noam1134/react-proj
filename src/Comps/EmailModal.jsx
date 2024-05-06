@@ -118,7 +118,6 @@ function EmailModal({
     }
   };
 
-
   if (!open) return null;
 
   return (
