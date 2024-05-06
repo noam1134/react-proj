@@ -342,7 +342,52 @@ public class DBservices
             // note that the return value appears only after closing the connection
             var result = returnParameter.Value;
         }
+    }
 
+    //--------------------------------------------------------------------------------------------------
+    // This method removes a email the user's inbox
+    //--------------------------------------------------------------------------------------------------
+    public bool DeleteEmailByID(int emailId)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("myProjDB"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        Dictionary<string, object> paramDic = new Dictionary<string, object>();
+        paramDic.Add("@EmailID", emailId);
+
+        cmd = CreateCommandWithStoredProcedure("SP_DeleteEmailByID", con, paramDic);// create the command
+
+        int numEffected = cmd.ExecuteNonQuery(); // execute the command
+        if (numEffected == 0)
+        {
+            throw new Exception("Email not exist");
+        }
+        try
+        {
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
     }
 
     //---------------------------------------------------------------------------------
