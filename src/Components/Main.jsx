@@ -76,11 +76,12 @@ const Main = () => {
   };
 
   const openPdf = () => {
-    const path = "./src/data/hospital_" + (user && user.hospitalId) + ".pdf";
+    // Ensure this path points to a location within the public directory
+    const path = `/hospital_${user && user.hospitalId}.pdf`;
+    console.log(path); // This will help verify the correct path is generated
     setPdfPath(path);
     setPdfVisible(true);
   };
-
   const closePdf = () => {
     setPdfVisible(false);
   };
